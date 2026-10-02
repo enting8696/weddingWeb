@@ -1,6 +1,5 @@
 /* 社群 App 內開啟時，引導改用外部瀏覽器（由 merge.py 自動嵌入 index.html） */
 (function () {
-  if (window.__openExternal) return; window.__openExternal = true;
   var ua = navigator.userAgent || '';
   var isLine = /\bLine\//i.test(ua);
   var isFB = /FBAN|FBAV|FB_IAB|FBIOS|Messenger/i.test(ua);
@@ -34,8 +33,7 @@
   var clean = location.origin + location.pathname;
   var menu = isIOS ? '右上角 ⋯ 或右下角 Safari 圖示' : '右上角 ⋮';
   function showBar() {
-    if (!document.body) return false;
-    if (document.getElementById('__ext_bar')) return true;
+    if (!document.body || document.getElementById('__ext_bar')) return;
     var bar = document.createElement('div');
     bar.id = '__ext_bar';
     bar.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:99999;' +
@@ -57,7 +55,6 @@
         navigator.clipboard.writeText(clean).then(ok, function () { prompt('請複製此連結', clean); });
       } else { prompt('請複製此連結', clean); }
     };
-    return true;
   }
   // 網頁載入時整個畫面會被替換，所以持續確認提示條還在（約 20 秒）
   var tries = 0;

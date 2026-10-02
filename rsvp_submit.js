@@ -3,8 +3,7 @@
   var FORM_ID = '1FAIpQLSeGo9noyiMKCWlhBp0oxbXpVHgvHpkkURV1CQATke9u-acWtw';
   var E = { name: 'entry.214103667', email: 'entry.1165468626', rel: 'entry.189367968',
             guests: 'entry.380447004', meat: 'entry.2101957223', veg: 'entry.384739430',
-            chair: 'entry.880669736',
-            msg: 'entry.1023712468' };
+            chair: 'entry.880669736', msg: 'entry.1023712468' };
   var busy = false;
 
   function toast(text) {
@@ -68,8 +67,8 @@
       i.type = 'hidden'; i.name = E[key]; i.value = val; form.appendChild(i);
     };
     add('name', d.name); add('email', d.email); add('rel', d.rel); add('guests', String(n));
-    if (n > 0) { add('meat', String(meat)); add('veg', String(veg)); add('chair', d.chair); }
-    else { add('meat', '0'); add('veg', '0'); }
+    add('meat', String(n > 0 ? meat : 0)); add('veg', String(n > 0 ? veg : 0));
+    if (n > 0) add('chair', d.chair);
     add('msg', d.msg);
 
     var finished = false;
