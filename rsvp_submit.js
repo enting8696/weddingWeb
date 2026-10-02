@@ -2,7 +2,8 @@
 (function () {
   var FORM_ID = '1FAIpQLSeGo9noyiMKCWlhBp0oxbXpVHgvHpkkURV1CQATke9u-acWtw';
   var E = { name: 'entry.214103667', email: 'entry.1165468626', rel: 'entry.189367968',
-            guests: 'entry.380447004', diet: 'entry.2101957223', chair: 'entry.880669736',
+            guests: 'entry.380447004', meat: 'entry.2101957223', veg: 'entry.384739430',
+            chair: 'entry.880669736',
             msg: 'entry.1023712468' };
   var busy = false;
 
@@ -32,14 +33,20 @@
     };
 
     var d = { name: v('f-name'), email: v('f-email'), rel: v('f-rel'), guests: v('f-guests'),
-              diet: v('f-diet'), chair: v('f-chair'), msg: v('f-msg') };
+              meat: v('f-meat'), veg: v('f-veg'), chair: v('f-chair'), msg: v('f-msg') };
     var n = parseInt(d.guests, 10);
 
     if (!d.name) return fail('f-name', '請填寫姓名');
     if (d.email && !/^\S+@\S+\.\S+$/.test(d.email)) return fail('f-email', 'Email 格式不正確');
     if (!d.rel) return fail('f-rel', '請選擇與新人關係');
     if (!Number.isFinite(n) || n < 0) return fail('f-guests', '請填寫參加人數（不克出席請填 0）');
-    if (n > 0 && !d.diet) return fail('f-diet', '請選擇飲食需求');
+    var meat = d.meat === '' ? 0 : parseInt(d.meat, 10);
+    var veg  = d.veg  === '' ? 0 : parseInt(d.veg, 10);
+    if (n > 0) {
+      if (!Number.isFinite(meat) || meat < 0) return fail('f-meat', '葷食人數請填 0 以上的數字');
+      if (!Number.isFinite(veg)  || veg  < 0) return fail('f-veg',  '素食人數請填 0 以上的數字');
+      if (meat + veg !== n) return fail(d.meat === '' ? 'f-meat' : 'f-veg', '葷食＋素食需等於參加人數（' + n + ' 位）');
+    }
 
     busy = true;
     toast('傳送中…');
@@ -61,7 +68,8 @@
       i.type = 'hidden'; i.name = E[key]; i.value = val; form.appendChild(i);
     };
     add('name', d.name); add('email', d.email); add('rel', d.rel); add('guests', String(n));
-    if (n > 0) { add('diet', d.diet); add('chair', d.chair); }
+    if (n > 0) { add('meat', String(meat)); add('veg', String(veg)); add('chair', d.chair); }
+    else { add('meat', '0'); add('veg', '0'); }
     add('msg', d.msg);
 
     var finished = false;
